@@ -7,7 +7,7 @@
       prepend-inner-icon="mdi-magnify"
       single-line
       placeholder="Search the stars"
-      @input="handleInput"
+      @input="handleChange"
     />
     <ul v-if="Object.keys(filteredData).length > 0" class="dropdown">
       <li v-for="(items, category) in filteredData" :key="category">
@@ -46,12 +46,12 @@ export default {
   setup(props, { emit }) {
     const searchInput = ref("");
 
-    const handleInput = () => {
-      emit("input");
+    const handleChange = () => {
+      emit("searchChange", searchInput.value);
     };
 
-    const selectItem = (item) => {
-      emit("select", item);
+    const itemSelect = (item) => {
+      emit("itemSelected", item);
       searchInput.value = ""; // Clear input after selection if needed
     };
 
@@ -63,8 +63,8 @@ export default {
 
     return {
       searchInput,
-      handleInput,
-      selectItem,
+      handleChange,
+      itemSelect,
       // highlightMatch,
     };
   },

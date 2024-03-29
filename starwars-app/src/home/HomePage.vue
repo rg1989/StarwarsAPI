@@ -7,8 +7,8 @@
       <h1>Home Page:</h1>
       <Autocomplete
         :filteredData="searchResults"
-        @input="handleInput"
-        @select="handleSelect"
+        @searchChange="handleInput"
+        @itemSelect="handleSelect"
       />
     </div>
   </div>
@@ -52,8 +52,7 @@ export default {
       }
     }
 
-    const handleInput = async (inputEvent) => {
-      const inputValue = inputEvent.target.value;
+    const handleInput = async (inputValue) => {
       const requests = categories.value.map(async (category) => {
         const results = await fetchData(category, inputValue);
         if (!results.length) {
