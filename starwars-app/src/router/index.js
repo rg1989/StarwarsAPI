@@ -3,7 +3,7 @@ import {
     createRouter
 } from "vue-router";
 
-import HomePage from '../home/HomePage.vue'
+import HomePage from '../pages/HomePage.vue'
 
 const history = createWebHistory();
 const routes = [
