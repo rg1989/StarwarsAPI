@@ -26,7 +26,6 @@ export default {
     Autocomplete,
   },
   setup() {
-    const categories = ref([]);
     const isLoading = ref(false);
     const searchResults = reactive({});
 
@@ -34,42 +33,17 @@ export default {
 
     onMounted(async () => {
       await store.dispatch("fetchCategories");
-      categories.value = store.getters.getCategories;
     });
 
-    // const prefetchCategories = async () => {
-    //   try {
-    //     const response = await fetch(`https://swapi.dev/api/`);
-    //     categories.value = Object.keys(await response.json());
-    //   } catch (error) {
-    //     console.error("Error fetching categories:", error);
-    //   }
-    // };
-    // prefetchCategories();
-
-    async function fetchData(category, inputValue) {
-      try {
-        const response = await fetch(
-          `https://swapi.dev/api/${category}?search=${inputValue}`
-        );
-        const data = await response.json();
-        return data.results;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        return [];
-      }
-    }
-
     const handleInput = async (inputValue) => {
-      const requests = categories.value.map(async (category) => {
-        const results = await fetchData(category, inputValue);
-        if (!results.length) {
+      const newResults = await store.dispatch("fetchDataByString", inputValue);
+      newResults.forEach(({ category, data }) => {
+        if (!data.results.length) {
           delete searchResults[category];
         } else {
-          searchResults[category] = results;
+          searchResults[category] = data.results;
         }
       });
-      await Promise.all(requests);
     };
 
     const debouncedHandleInput = debounce(handleInput, 200);
