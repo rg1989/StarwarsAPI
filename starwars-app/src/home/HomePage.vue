@@ -15,9 +15,10 @@
 </template>
 
 <script>
-import { ref, reactive, watch } from "vue";
+import { ref, reactive, computed, onMounted } from "vue";
 import Autocomplete from "../components/CustomAutocomplete.vue";
 import { debounce } from "lodash";
+import { useStore } from "vuex";
 
 export default {
   name: "HomePage",
@@ -29,15 +30,22 @@ export default {
     const isLoading = ref(false);
     const searchResults = reactive({});
 
-    const prefetchCategories = async () => {
-      try {
-        const response = await fetch(`https://swapi.dev/api/`);
-        categories.value = Object.keys(await response.json());
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-    prefetchCategories();
+    const store = useStore();
+
+    onMounted(async () => {
+      await store.dispatch("fetchCategories");
+      categories.value = store.getters.getCategories;
+    });
+
+    // const prefetchCategories = async () => {
+    //   try {
+    //     const response = await fetch(`https://swapi.dev/api/`);
+    //     categories.value = Object.keys(await response.json());
+    //   } catch (error) {
+    //     console.error("Error fetching categories:", error);
+    //   }
+    // };
+    // prefetchCategories();
 
     async function fetchData(category, inputValue) {
       try {
