@@ -1,15 +1,17 @@
 import { createStore } from 'vuex';
 import axios from 'axios';
+import { BASE_URL, routeNames } from '../config/config.js';
 
 export default createStore({
   state: {
-    apiBaseUrl: 'https://swapi.dev/api', // 'https://swapi.dev/api/'
+    apiBaseUrl: BASE_URL,
     categories: [],
     data: {},
+    people: [],
   },
   getters: {
     getCategories: state => { return state.categories },
-    // getByCategory: state => query => state.categories
+    getPeople: state => { return state.people },
   },
   mutations: {
     setCategories(state, categories) {
@@ -17,12 +19,23 @@ export default createStore({
     },
     setData(state, data) {
       state.data = data;
-    }
+    },
+    setPeople(state, people) {
+      state.people = people;
+    },
   },
   actions: {
+    async fetchPeople({ commit }) {
+      try {
+        const response = await axios.get(`${BASE_URL}/${routeNames.PEOPLE}/`);
+        commit('setPeople', response.data);
+      } catch (error) {
+        console.error('Error fetching people:', error);
+      }
+    },
     async fetchCategories({ commit }) {
       try {
-        const response = await axios.get(`https://swapi.dev/api/`);
+        const response = await axios.get(BASE_URL);
         commit('setCategories', Object.keys(response.data));
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -30,16 +43,13 @@ export default createStore({
     },
     async fetchDataByString({ state, commit }, inputValue) {
       try {
-        // Array to store promises for each category request
         const requests = state.categories.map(category => {
-          return axios.get(`https://swapi.dev/api/${category}?search=${inputValue}`)
+          return axios.get(`${BASE_URL}/${category}?search=${inputValue}`)
             .then(response => ({ category, data: response.data }));
         });
 
-        // Wait for all requests to complete
         const results = await Promise.all(requests);
 
-        // Commit the fetched data for each category
         var newData = {};
         results.forEach(({ category, data }) => {
           if (data.results.length) {
@@ -49,11 +59,10 @@ export default createStore({
 
         commit('setData', newData);
 
-        // Return the aggregated result
         return results;
       } catch (error) {
-        console.error('Error fetching data:', error);
-        throw error; // Propagate the error
+        console.error('Error searching for data:', error);
+        throw error;
       }
     }
 

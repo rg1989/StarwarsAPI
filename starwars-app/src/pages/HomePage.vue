@@ -1,24 +1,23 @@
 <template>
   <div>
-    <div v-if="isLoading">
-      <p>Loading...</p>
-    </div>
-    <div v-else>
-      <h1>Home Page:</h1>
-      <Autocomplete
-        :filteredData="searchResults"
-        @searchChange="handleInput"
-        @itemSelect="handleSelect"
-      />
-    </div>
+    <h1 class="display-1">HomePage:</h1>
+    <Autocomplete
+      :filteredData="searchResults"
+      :isLoading="isLoading"
+      @inputChange="inputChange"
+      @itemSelect="itemSelect"
+      @categorySelect="categorySelect"
+    />
   </div>
 </template>
 
 <script>
-import { ref, reactive, computed, onMounted } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import Autocomplete from "../components/CustomAutocomplete.vue";
 import { debounce } from "lodash";
 import { useStore } from "vuex";
+import router from "../router/index.js";
+import { routeNames } from "../config/config.js";
 
 export default {
   name: "HomePage",
@@ -35,7 +34,8 @@ export default {
       await store.dispatch("fetchCategories");
     });
 
-    const handleInput = async (inputValue) => {
+    const inputChange = async (inputValue) => {
+      isLoading.value = true;
       const newResults = await store.dispatch("fetchDataByString", inputValue);
       newResults.forEach(({ category, data }) => {
         if (!data.results.length) {
@@ -44,20 +44,25 @@ export default {
           searchResults[category] = data.results;
         }
       });
+      isLoading.value = false;
     };
 
-    const debouncedHandleInput = debounce(handleInput, 200);
+    const debouncedInputChange = debounce(inputChange, 200);
 
-    const handleSelect = (item) => {
-      console.log("Selected item:", item);
-      // Handle the selected item here
+    const itemSelect = (item) => {
+      router.push({ name: routeNames.ENTITY, params: { name: item.name } });
+    };
+
+    const categorySelect = (category) => {
+      router.push({ name: category });
     };
 
     return {
       isLoading,
       searchResults,
-      handleInput: debouncedHandleInput,
-      handleSelect,
+      inputChange: debouncedInputChange,
+      itemSelect,
+      categorySelect,
     };
   },
 };

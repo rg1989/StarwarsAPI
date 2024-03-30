@@ -9,31 +9,37 @@
       placeholder="Search the stars"
       @input="handleChange"
     />
-    <ul v-if="Object.keys(filteredData).length > 0" class="dropdown">
+    <ul v-if="!isLoading" :class="{ dropdown: isDropdownEmpty }">
       <li v-for="(items, category) in filteredData" :key="category">
         <span class="category">{{ category }}</span>
         <ul>
           <li
-            class="result_item"
+            class="result_item pointer"
             v-for="item in items.slice(0, 3)"
             :key="item"
-            @click="selectItem(item)"
+            @click="itemSelect(item)"
           >
             {{ item.name }}
             <!-- <span v-html="highlightMatch(item.name)"></span> -->
           </li>
-          <li class="result_item" v-if="items.length > 3">Show all...</li>
+          <li
+            class="result_item show_more_item pointer"
+            v-if="items.length > 3"
+            @click="categorySelect(category)"
+          >
+            Show all...
+          </li>
         </ul>
       </li>
     </ul>
-    <ul class="loader" v-else>
+    <ul class="loader" v-if="isLoading">
       <v-progress-circular color="primary" indeterminate></v-progress-circular>
     </ul>
   </div>
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 export default {
   name: "Autocomplete",
@@ -42,17 +48,25 @@ export default {
       type: Object,
       required: true,
     },
+    isLoading: {
+      type: Boolean,
+      required: true,
+    },
   },
   setup(props, { emit }) {
     const searchInput = ref("");
+    const isDropdownEmpty = computed(() => Object.keys(props.filteredData).length > 0);
 
     const handleChange = () => {
-      emit("searchChange", searchInput.value);
+      emit("inputChange", searchInput.value);
     };
 
     const itemSelect = (item) => {
-      emit("itemSelected", item);
-      searchInput.value = ""; // Clear input after selection if needed
+      emit("itemSelect", item);
+    };
+
+    const categorySelect = (category) => {
+      emit("categorySelect", category);
     };
 
     // const highlightMatch = (name) => {
@@ -65,6 +79,8 @@ export default {
       searchInput,
       handleChange,
       itemSelect,
+      categorySelect,
+      isDropdownEmpty,
       // highlightMatch,
     };
   },
@@ -81,7 +97,7 @@ export default {
 }
 
 .dropdown {
-  background-color: #fff;
+  background-color: #e4f5fc;
   border: 1px solid #ccc;
   padding: 0.5rem;
 }
@@ -95,12 +111,19 @@ ul {
   padding: 0;
 }
 
-li {
+.pointer {
   cursor: pointer;
 }
 
 .result_item:hover {
-  background-color: #f0f0f0;
+  background-color: #a9d4df;
+}
+.show_more_item {
+  text-align: right;
+  font-weight: bold;
+}
+.show_more_item:hover {
+  background-color: #a9d4df;
 }
 
 .highlight {
