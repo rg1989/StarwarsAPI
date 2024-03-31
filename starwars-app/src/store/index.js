@@ -23,8 +23,50 @@ export default createStore({
     setPeople(state, people) {
       state.people = people;
     },
+    deletePerson(state, deletedPerson) {
+      const index = state.people.results.findIndex(person => person === deletedPerson);
+      if (index !== -1) {
+        state.people.results.splice(index, 1);
+      }
+    },
+    editPerson(state, updatedPerson) {
+      const index = state.people.results.findIndex(person => person === updatedPerson);
+      if (index !== -1) {
+        state.people.results.splice(index, 1, updatedPerson);
+      }
+    },
+    addPerson(state, newPerson) {
+      state.people.results.push(newPerson);
+    },
   },
   actions: {
+    // would be async in real life
+    editPerson({ commit }, updatedPerson) {
+      try {
+        commit('editPerson', updatedPerson);
+      } catch (error) {
+        console.error('Error editing a person:', error);
+        throw error;
+      }
+    },
+    // would be async in real life
+    addPerson({ commit }, newPerson) {
+      try {
+        commit('addPerson', newPerson);
+      } catch (error) {
+        console.error('Error adding a person:', error);
+        throw error;
+      }
+    },
+    // would be async in real life
+    deletePerson({ commit }, deletedPerson) {
+      try {
+        commit('deletePerson', deletedPerson);
+      } catch (error) {
+        console.error('Error deleting a person:', error);
+        throw error;
+      }
+    },
     async fetchPeople({ commit }) {
       try {
         const response = await axios.get(`${BASE_URL}/${routeNames.PEOPLE}/`);
