@@ -14,7 +14,6 @@ import store from './store'
 //Router
 import router from './router'
 
-
 const vuetify = createVuetify({
   components,
   directives,
