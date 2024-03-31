@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@mdi/font": "5.9.55",
+    "axios": "^1.6.8",
     "lodash": "^4.17.15",
     "roboto-fontface": "*",
     "vue": "^3.4.19",
@@ -21,7 +22,7 @@
     "@vitejs/plugin-vue": "^5.0.4",
     "@vue/cli-plugin-vuex": "~5.0.0",
     "vite": "^5.1.4",
-    "vite-plugin-vuetify": "^1.0.0-alpha.12",
+    "vite-plugin-vuetify": "^1.0.2",
     "vue-cli-plugin-axios": "~0.0.4",
     "vue-cli-plugin-lodash": "~0.1.4",
     "vue-cli-plugin-vuetify": "~2.5.8"
