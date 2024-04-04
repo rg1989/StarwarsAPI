@@ -59,7 +59,6 @@
 
 <script>
 import { ref, reactive } from "vue";
-import { useStore } from "vuex";
 import ItemAddDialog from "./ItemAddDialog.vue";
 import ItemEditDialog from "./ItemEditDialog.vue";
 
@@ -102,8 +101,6 @@ export default {
     const isAddDialog = ref(false);
     const isEditDialog = ref(false);
     const editableItemIndex = ref(0);
-
-    const store = useStore();
 
     const loadItems = async ({ page, itemsPerPage }) => {
       try {
