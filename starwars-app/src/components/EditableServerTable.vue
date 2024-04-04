@@ -67,15 +67,31 @@ export default {
     PersonAddDialog,
     PersonEditDialog,
   },
-  setup() {
+  props: {
+    loadItems: {
+      type: Function,
+      required: true,
+    },
+    deleteItem: {
+      type: Function,
+      required: true,
+    },
+    editItem: {
+      type: Function,
+      required: true,
+    },
+    addItem: {
+      type: Function,
+      required: true,
+    },
+    headers: {
+      typeof: Object,
+      required: true,
+    },
+  },
+  setup(props) {
     const itemsPerPage = ref(10);
-    const headers = reactive([
-      { key: "name", align: "start", title: "Name", value: "name" },
-      { key: "gender", title: "Gender", value: "gender" },
-      { key: "birth_year", title: "Birth Year", value: "birth_year" },
-      { key: "height", title: "Height", value: "height" },
-      { key: "mass", title: "Mass", value: "mass" },
-    ]);
+    const headers = reactive(props.headers);
     const serverItems = ref([]);
     const loading = ref(true);
     const totalItems = ref(0);
@@ -90,7 +106,7 @@ export default {
     const loadItems = async ({ page, itemsPerPage }) => {
       try {
         loading.value = true;
-        const response = await store.dispatch("fetchPeopleByPage", page);
+        const response = await props.loadItems(page);
         serverItems.value = response.results;
         totalItems.value = response.count;
         loading.value = false;
@@ -109,12 +125,12 @@ export default {
     };
 
     const addItem = (item) => {
-      store.dispatch("addCharacter", item);
+      props.addItem(item);
     };
 
     //DELETE CHARACTER
     const deleteItem = (item) => {
-      store.dispatch("deleteCharacter", item);
+      props.deleteItem(item);
     };
 
     //EDIT CHARACTER
@@ -129,7 +145,7 @@ export default {
     };
 
     const editItem = (editedCharacter) => {
-      store.dispatch("editCharacter", {
+      props.editItem({
         value: editedCharacter,
         index: editableItemIndex.value,
       });

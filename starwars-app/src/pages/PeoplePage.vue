@@ -1,129 +1,67 @@
 <template>
-  <EditableServerTable></EditableServerTable>
+  <EditableServerTable
+    :headers="headers"
+    :loadItems="loadPeople"
+    :addItem="addCharacter"
+    :deleteItem="deleteCharacter"
+    :editItem="editCharacter"
+  />
 </template>
 
 <script>
-import { ref, reactive } from "vue";
+import { reactive } from "vue";
 import { useStore } from "vuex";
-import PersonAddDialog from "../components/PersonAddDialog.vue";
-import PersonEditDialog from "../components/PersonEditDialog.vue";
 import EditableServerTable from "../components/EditableServerTable.vue";
 
 export default {
-  name: "PeoplePage2",
+  name: "PeoplePage",
   components: {
-    PersonAddDialog,
-    PersonEditDialog,
     EditableServerTable,
   },
-  // setup() {
-  //   const itemsPerPage = ref(10);
-  //   const headers = reactive([
-  //     { key: "name", align: "start", title: "Name", value: "name" },
-  //     { key: "gender", title: "Gender", value: "gender" },
-  //     { key: "birth_year", title: "Birth Year", value: "birth_year" },
-  //     { key: "height", title: "Height", value: "height" },
-  //     { key: "mass", title: "Mass", value: "mass" },
-  //   ]);
-  //   const serverItems = ref([]);
-  //   const loading = ref(true);
-  //   const totalItems = ref(0);
+  setup() {
+    const headers = reactive([
+      { key: "name", align: "start", title: "Name", value: "name" },
+      { key: "gender", title: "Gender", value: "gender" },
+      { key: "birth_year", title: "Birth Year", value: "birth_year" },
+      { key: "height", title: "Height", value: "height" },
+      { key: "mass", title: "Mass", value: "mass" },
+    ]);
 
-  //   const editableCharacter = ref({});
-  //   const isAddDialog = ref(false);
-  //   const isEditDialog = ref(false);
-  //   const editableCharacterIndex = ref(0);
+    const store = useStore();
 
-  //   const store = useStore();
+    const loadPeople = async (page) => {
+      try {
+        const peopleList = await store.dispatch("fetchPeopleByPage", page);
+        return peopleList;
+      } catch (error) {
+        console.error("Error fetching people:", error);
+        return [];
+      }
+    };
 
-  //   const loadItems = async ({ page, itemsPerPage }) => {
-  //     try {
-  //       loading.value = true;
-  //       const response = await store.dispatch("fetchPeopleByPage", page);
-  //       serverItems.value = response.results;
-  //       totalItems.value = response.count;
-  //       loading.value = false;
-  //     } catch (error) {
-  //       console.error("Error fetching people:", error);
-  //     }
-  //   };
+    // ADD CHARACTER
+    const addCharacter = (newCharacter) => {
+      store.dispatch("addCharacter", newCharacter);
+    };
 
-  //   // ADD CHARACTER
-  //   const closeAddDialog = () => {
-  //     isAddDialog.value = false;
-  //   };
+    //DELETE CHARACTER
+    const deleteCharacter = (character) => {
+      console.log("delete" + character.name);
+      store.dispatch("deleteCharacter", character);
+    };
 
-  //   const openAddDialog = () => {
-  //     isAddDialog.value = true;
-  //   };
+    //EDIT CHARACTER
+    const editCharacter = (editedCharacter) => {
+      store.dispatch("editCharacter", editedCharacter);
+    };
 
-  //   const addNewCharacter = (newCharacter) => {
-  //     store.dispatch("addCharacter", newCharacter);
-  //   };
-
-  //   //DELETE CHARACTER
-  //   const deleteCharacter = (character) => {
-  //     console.log("delete" + character.name);
-  //     store.dispatch("deleteCharacter", character);
-  //   };
-
-  //   //EDIT CHARACTER
-  //   const closeEditDialog = () => {
-  //     isEditDialog.value = false;
-  //   };
-
-  //   const openEditDialog = (charecter, index) => {
-  //     editableCharacter.value = charecter;
-  //     editableCharacterIndex.value = index;
-  //     isEditDialog.value = true;
-  //   };
-
-  //   const editCharacter = (editedCharacter) => {
-  //     store.dispatch("editCharacter", {
-  //       value: editedCharacter,
-  //       index: editableCharacterIndex.value,
-  //     });
-  //   };
-
-  //   return {
-  //     itemsPerPage,
-  //     headers,
-  //     serverItems,
-  //     loading,
-  //     totalItems,
-  //     loadItems,
-  //     closeAddDialog,
-  //     openAddDialog,
-  //     addNewCharacter,
-  //     isAddDialog,
-  //     deleteCharacter,
-  //     closeEditDialog,
-  //     openEditDialog,
-  //     editCharacter,
-  //     isEditDialog,
-  //     editableCharacter,
-  //     editableCharacterIndex,
-  //   };
-  // },
+    return {
+      headers,
+      loadPeople,
+      addCharacter,
+      deleteCharacter,
+      editCharacter,
+    };
+  },
 };
 </script>
-
-<!-- <style>
-.table-container {
-  position: relative;
-}
-
-.buttons-column {
-  position: absolute;
-  right: 0;
-  opacity: 0;
-}
-
-.table-data-row:hover .buttons-column {
-  opacity: 1;
-}
-
-.v-data-table__wrapper {
-  position: relative;
-}
-</style> -->
