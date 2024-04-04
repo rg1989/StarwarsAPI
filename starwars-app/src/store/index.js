@@ -32,8 +32,8 @@ export default createStore({
         state.people.results.splice(index, 1);
       }
     },
-    editCharacter(state, editedChar, editedCharIndex) {
-      state.people.results.splice(editedCharIndex, 1, editedChar);
+    editCharacter(state, editObject) {
+      state.people.results.splice(editObject.index, 1, editObject.value);
     },
     addCharacter(state, newChar) {
       state.people.results.push(newChar);
@@ -41,9 +41,9 @@ export default createStore({
   },
   actions: {
     // would be async in real life
-    editCharacter({ commit }, editedChar) {
+    editCharacter({ commit }, editObject) {
       try {
-        commit('editCharacter', editedChar);
+        commit('editCharacter', editObject);
       } catch (error) {
         console.error('Error editing a person:', error);
         throw error;

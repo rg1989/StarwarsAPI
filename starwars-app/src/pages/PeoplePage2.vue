@@ -46,7 +46,7 @@
       :isDialogOpen="isAddDialog"
       @openDialog="openAddDialog"
       @closeDialog="closeAddDialog"
-      @confirm="addNewPerson"
+      @confirm="addNewCharacter"
     />
     <PersonEditDialog
       :isDialogOpen="isEditDialog"
@@ -110,9 +110,8 @@ export default {
       isAddDialog.value = true;
     };
 
-    const addNewPerson = (newUser) => {
-      store.dispatch("addCharacter", newUser);
-      serverItems.value = store.getters.getPeople.results;
+    const addNewCharacter = (newCharacter) => {
+      store.dispatch("addCharacter", newCharacter);
     };
 
     //DELETE CHARACTER
@@ -133,8 +132,10 @@ export default {
     };
 
     const editCharacter = (editedCharacter) => {
-      store.dispatch("editCharacter", editedCharacter, editableCharacterIndex.value);
-      // serverItems.value = store.getters.getPeople.results;
+      store.dispatch("editCharacter", {
+        value: editedCharacter,
+        index: editableCharacterIndex.value,
+      });
     };
 
     return {
@@ -146,7 +147,7 @@ export default {
       loadItems,
       closeAddDialog,
       openAddDialog,
-      addNewPerson,
+      addNewCharacter,
       isAddDialog,
       deleteCharacter,
       closeEditDialog,
