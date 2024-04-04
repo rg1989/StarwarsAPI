@@ -6,11 +6,12 @@
     <v-card>
       <v-card-title>Add Charecter</v-card-title>
       <v-card-text>
-        <v-text-field v-model="newUser.name" label="Name"></v-text-field>
-        <v-text-field v-model="newUser.gender" label="Gender"></v-text-field>
-        <v-text-field v-model="newUser.birth_year" label="Birth Year"></v-text-field>
-        <v-text-field v-model="newUser.height" label="Height"></v-text-field>
-        <v-text-field v-model="newUser.mass" label="Mass"></v-text-field>
+        <v-text-field
+          v-for="header in headers"
+          :key="header.key"
+          :label="header.title"
+          v-model="newItem[header.key]"
+        ></v-text-field>
       </v-card-text>
       <v-card-actions>
         <v-btn color="primary" @click="confirmAdd">Confirm</v-btn>
@@ -21,19 +22,24 @@
 </template>
 
 <script>
-import { ref, watch } from "vue";
+import { reactive, ref, watch } from "vue";
 
 export default {
-  name: "CustomAddDialog",
+  name: "PersonAddDialog",
   props: {
     isDialogOpen: {
       type: Boolean,
       required: true,
     },
+    headers: {
+      typeof: Object,
+      required: true,
+    },
   },
   setup(props, { emit }) {
+    const headers = reactive(props.headers);
     const dialogVisible = ref(props.isDialogOpen);
-    const newUser = ref({
+    const newItem = ref({
       name: "",
       gender: "",
       birth_year: "",
@@ -47,6 +53,13 @@ export default {
 
     const closeDialog = () => {
       emit("closeDialog");
+      newItem.value = {
+        name: "",
+        gender: "",
+        birth_year: "",
+        height: "",
+        mass: "",
+      };
     };
 
     watch(
@@ -57,13 +70,12 @@ export default {
     );
 
     const confirmAdd = () => {
-      closeDialog();
-
       //Of course should have proper validation here
-      emit("confirm", newUser);
+      emit("confirm", newItem.value);
+      closeDialog();
     };
 
-    return { dialogVisible, openDialog, closeDialog, newUser, confirmAdd };
+    return { dialogVisible, openDialog, closeDialog, newItem, confirmAdd };
   },
 };
 </script>

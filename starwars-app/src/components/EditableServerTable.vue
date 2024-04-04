@@ -40,13 +40,15 @@
         </tr>
       </template></v-data-table-server
     >
-    <PersonAddDialog
+    <ItemAddDialog
+      :headers="headers"
       :isDialogOpen="isAddDialog"
       @openDialog="openAddDialog"
       @closeDialog="closeAddDialog"
       @confirm="addItem"
     />
-    <PersonEditDialog
+    <ItemEditDialog
+      :headers="headers"
       :isDialogOpen="isEditDialog"
       :editableCharacter="editableCharacter"
       @closeDialog="closeEditDialog"
@@ -58,14 +60,14 @@
 <script>
 import { ref, reactive } from "vue";
 import { useStore } from "vuex";
-import PersonAddDialog from "./PersonAddDialog.vue";
-import PersonEditDialog from "./PersonEditDialog.vue";
+import ItemAddDialog from "./ItemAddDialog.vue";
+import ItemEditDialog from "./ItemEditDialog.vue";
 
 export default {
   name: "EditableServerTable",
   components: {
-    PersonAddDialog,
-    PersonEditDialog,
+    ItemAddDialog,
+    ItemEditDialog,
   },
   props: {
     loadItems: {

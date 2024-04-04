@@ -3,11 +3,12 @@
     <v-card>
       <v-card-title>Edit Charecter</v-card-title>
       <v-card-text>
-        <v-text-field v-model="editedUser.name" label="Name"></v-text-field>
-        <v-text-field v-model="editedUser.gender" label="Gender"></v-text-field>
-        <v-text-field v-model="editedUser.birth_year" label="Birth Year"></v-text-field>
-        <v-text-field v-model="editedUser.height" label="Height"></v-text-field>
-        <v-text-field v-model="editedUser.mass" label="Mass"></v-text-field>
+        <v-text-field
+          v-for="header in headers"
+          :key="header.key"
+          :label="header.title"
+          v-model="editedItem[header.key]"
+        ></v-text-field>
       </v-card-text>
       <v-card-actions>
         <v-btn color="primary" @click="confirmEdit">Confirm</v-btn>
@@ -31,10 +32,15 @@ export default {
       type: Object,
       required: true,
     },
+    headers: {
+      typeof: Object,
+      required: true,
+    },
   },
   setup(props, { emit }) {
+    const headers = reactive(props.headers);
     const dialogVisible = ref(props.isDialogOpen);
-    const editedUser = ref({ ...props.editableCharacter });
+    const editedItem = ref({ ...props.editableCharacter });
 
     const openDialog = () => {
       emit("openDialog");
@@ -54,17 +60,17 @@ export default {
     watch(
       () => props.editableCharacter,
       (newValue) => {
-        editedUser.value = { ...newValue };
+        editedItem.value = { ...newValue };
       }
     );
 
     const confirmEdit = () => {
       closeDialog();
       //Of course should have proper validation here
-      emit("confirm", editedUser.value);
+      emit("confirm", editedItem.value);
     };
 
-    return { dialogVisible, openDialog, closeDialog, editedUser, confirmEdit };
+    return { dialogVisible, openDialog, closeDialog, editedItem, confirmEdit };
   },
 };
 </script>

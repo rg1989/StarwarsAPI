@@ -4,9 +4,9 @@ import { BASE_URL, routeNames } from '../config/config.js';
 
 export default createStore({
   state: {
-    apiBaseUrl: BASE_URL,
+    apiBaseUrl: BASE_URL, //I know its not the place. should be from config file per env in reality.
     categories: [],
-    data: {},
+    allData: {},
     people: [],
   },
   getters: {
@@ -17,8 +17,8 @@ export default createStore({
     setCategories(state, categories) {
       state.categories = categories;
     },
-    setData(state, data) {
-      state.data = data;
+    setAllData(state, data) {
+      state.allData = data;
     },
     setPeople(state, people) {
       state.people = people;
@@ -108,7 +108,7 @@ export default createStore({
           }
         });
 
-        commit('setData', newData);
+        commit('setAllData', newData);
 
         return results;
       } catch (error) {

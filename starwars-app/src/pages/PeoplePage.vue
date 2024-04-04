@@ -46,7 +46,6 @@ export default {
 
     //DELETE CHARACTER
     const deleteCharacter = (character) => {
-      console.log("delete" + character.name);
       store.dispatch("deleteCharacter", character);
     };
 
