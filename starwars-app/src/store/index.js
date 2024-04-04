@@ -23,45 +23,45 @@ export default createStore({
     setPeople(state, people) {
       state.people = people;
     },
-    deletePerson(state, deletedPerson) {
+    setPeopleByPage(state, people) {
+      state.people = people;
+    },
+    deleteCharacter(state, deletedPerson) {
       const index = state.people.results.findIndex(person => person === deletedPerson);
       if (index !== -1) {
         state.people.results.splice(index, 1);
       }
     },
-    editPerson(state, updatedPerson) {
-      const index = state.people.results.findIndex(person => person === updatedPerson);
-      if (index !== -1) {
-        state.people.results.splice(index, 1, updatedPerson);
-      }
+    editCharacter(state, editedChar, editedCharIndex) {
+      state.people.results.splice(editedCharIndex, 1, editedChar);
     },
-    addPerson(state, newPerson) {
-      state.people.results.push(newPerson);
+    addCharacter(state, newChar) {
+      state.people.results.push(newChar);
     },
   },
   actions: {
     // would be async in real life
-    editPerson({ commit }, updatedPerson) {
+    editCharacter({ commit }, editedChar) {
       try {
-        commit('editPerson', updatedPerson);
+        commit('editCharacter', editedChar);
       } catch (error) {
         console.error('Error editing a person:', error);
         throw error;
       }
     },
     // would be async in real life
-    addPerson({ commit }, newPerson) {
+    addCharacter({ commit }, newChar) {
       try {
-        commit('addPerson', newPerson);
+        commit('addCharacter', newChar);
       } catch (error) {
         console.error('Error adding a person:', error);
         throw error;
       }
     },
     // would be async in real life
-    deletePerson({ commit }, deletedPerson) {
+    deleteCharacter({ commit }, deletedChar) {
       try {
-        commit('deletePerson', deletedPerson);
+        commit('deleteCharacter', deletedChar);
       } catch (error) {
         console.error('Error deleting a person:', error);
         throw error;
@@ -71,6 +71,15 @@ export default createStore({
       try {
         const response = await axios.get(`${BASE_URL}/${routeNames.PEOPLE}/`);
         commit('setPeople', response.data);
+      } catch (error) {
+        console.error('Error fetching people:', error);
+      }
+    },
+    async fetchPeopleByPage({ commit }, pageNum) {
+      try {
+        const response = await axios.get(`${BASE_URL}/${routeNames.PEOPLE}/?page=${pageNum}`);
+        commit('setPeopleByPage', response.data);
+        return response.data;
       } catch (error) {
         console.error('Error fetching people:', error);
       }

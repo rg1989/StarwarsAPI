@@ -8,6 +8,7 @@ import { routeNames } from '../config/config';
 import HomePage from '../pages/HomePage.vue';
 import FilmsPage from '../pages/FilmsPage.vue';
 import PeoplePage from '../pages/PeoplePage.vue';
+import PeoplePage2 from '../pages/PeoplePage2.vue';
 import PlanetsPage from '../pages/PlanetsPage.vue';
 import SpeciesPage from '../pages/SpeciesPage.vue';
 import StarshipsPage from '../pages/StarshipsPage.vue';
@@ -29,7 +30,7 @@ const routes = [
     {
         name: routeNames.PEOPLE,
         path: "/people",
-        component: PeoplePage
+        component: PeoplePage2
     },
     {
         name: routeNames.PLANETS,

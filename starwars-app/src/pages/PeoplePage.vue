@@ -70,10 +70,6 @@ export default {
       store.dispatch("editPerson", item);
     };
 
-    const editItem = (item) => {
-      store.dispatch("editPerson", item);
-    };
-
     const closeAddDialog = () => {
       isAddDialog.value = false;
     };
