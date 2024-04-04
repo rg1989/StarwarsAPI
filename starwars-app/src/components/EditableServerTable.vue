@@ -1,5 +1,5 @@
 <template>
-  <v-container class="table-container">
+  <div class="table-container">
     <v-data-table-server
       v-model:items-per-page="itemsPerPage"
       :headers="headers"
@@ -52,7 +52,7 @@
       @closeDialog="closeEditDialog"
       @confirm="editItem"
     />
-  </v-container>
+  </div>
 </template>
 
 <script>

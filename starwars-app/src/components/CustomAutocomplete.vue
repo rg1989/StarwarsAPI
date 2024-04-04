@@ -24,7 +24,6 @@
           </li>
           <li
             class="result_item show_more_item pointer"
-            v-if="items.length > 3"
             @click="categorySelect(category)"
           >
             Show all...

@@ -2,7 +2,7 @@
   <v-app>
     <v-main>
       {{ currentRouteName }}
-      <router-view />
+      <v-container><router-view /></v-container>
     </v-main>
   </v-app>
 </template>
