@@ -20,7 +20,6 @@
             @click="itemSelect(item)"
           >
             {{ item.name }}
-            <!-- <span v-html="highlightMatch(item.name)"></span> -->
           </li>
           <li
             class="result_item show_more_item pointer"
@@ -67,20 +66,12 @@ export default {
     const categorySelect = (category) => {
       emit("categorySelect", category);
     };
-
-    // const highlightMatch = (name) => {
-    //   if (!searchInput.value) return name;
-    //   const regex = new RegExp(searchInput.value, "gi");
-    //   return name.replace(regex, (match) => `<span class="highlight">${match}</span>`);
-    // };
-
     return {
       searchInput,
       handleChange,
       itemSelect,
       categorySelect,
       isDropdownEmpty,
-      // highlightMatch,
     };
   },
 };
@@ -123,10 +114,6 @@ ul {
 }
 .show_more_item:hover {
   background-color: #a9d4df;
-}
-
-.highlight {
-  background-color: yellow; /* Adjust highlight color as needed */
 }
 .loader {
   text-align: center;
