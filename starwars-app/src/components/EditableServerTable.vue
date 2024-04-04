@@ -19,11 +19,9 @@
       </template>
       <template v-slot:item="{ item, index }">
         <tr class="table-data-row">
-          <td>{{ item.name }}</td>
-          <td>{{ item.gender }}</td>
-          <td>{{ item.birth_year }}</td>
-          <td>{{ item.height }}</td>
-          <td>{{ item.mass }}</td>
+          <td v-for="(header, index) in headers" :key="index">
+            {{ item[header.value] }}
+          </td>
 
           <td class="buttons-column">
             <v-row no-gutters>
@@ -33,7 +31,7 @@
                 </v-btn>
               </v-col>
               <v-col cols="6">
-                <v-btn icon class="delete-button" @click="deleteCharacter(item)">
+                <v-btn icon class="delete-button" @click="deleteItem(item)">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </v-col>
@@ -46,13 +44,13 @@
       :isDialogOpen="isAddDialog"
       @openDialog="openAddDialog"
       @closeDialog="closeAddDialog"
-      @confirm="addNewCharacter"
+      @confirm="addItem"
     />
     <PersonEditDialog
       :isDialogOpen="isEditDialog"
       :editableCharacter="editableCharacter"
       @closeDialog="closeEditDialog"
-      @confirm="editCharacter"
+      @confirm="editItem"
     />
   </v-container>
 </template>
@@ -60,11 +58,11 @@
 <script>
 import { ref, reactive } from "vue";
 import { useStore } from "vuex";
-import PersonAddDialog from "../components/PersonAddDialog.vue";
-import PersonEditDialog from "../components/PersonEditDialog.vue";
+import PersonAddDialog from "./PersonAddDialog.vue";
+import PersonEditDialog from "./PersonEditDialog.vue";
 
 export default {
-  name: "PeoplePage2",
+  name: "EditableServerTable",
   components: {
     PersonAddDialog,
     PersonEditDialog,
@@ -85,7 +83,7 @@ export default {
     const editableCharacter = ref({});
     const isAddDialog = ref(false);
     const isEditDialog = ref(false);
-    const editableCharacterIndex = ref(0);
+    const editableItemIndex = ref(0);
 
     const store = useStore();
 
@@ -110,14 +108,13 @@ export default {
       isAddDialog.value = true;
     };
 
-    const addNewCharacter = (newCharacter) => {
-      store.dispatch("addCharacter", newCharacter);
+    const addItem = (item) => {
+      store.dispatch("addCharacter", item);
     };
 
     //DELETE CHARACTER
-    const deleteCharacter = (character) => {
-      console.log("delete" + character.name);
-      store.dispatch("deleteCharacter", character);
+    const deleteItem = (item) => {
+      store.dispatch("deleteCharacter", item);
     };
 
     //EDIT CHARACTER
@@ -125,16 +122,16 @@ export default {
       isEditDialog.value = false;
     };
 
-    const openEditDialog = (charecter, index) => {
-      editableCharacter.value = charecter;
-      editableCharacterIndex.value = index;
+    const openEditDialog = (item, index) => {
+      editableCharacter.value = item;
+      editableItemIndex.value = index;
       isEditDialog.value = true;
     };
 
-    const editCharacter = (editedCharacter) => {
+    const editItem = (editedCharacter) => {
       store.dispatch("editCharacter", {
         value: editedCharacter,
-        index: editableCharacterIndex.value,
+        index: editableItemIndex.value,
       });
     };
 
@@ -147,15 +144,15 @@ export default {
       loadItems,
       closeAddDialog,
       openAddDialog,
-      addNewCharacter,
+      addItem,
       isAddDialog,
-      deleteCharacter,
+      deleteItem,
       closeEditDialog,
       openEditDialog,
-      editCharacter,
+      editItem,
       isEditDialog,
       editableCharacter,
-      editableCharacterIndex,
+      editableItemIndex,
     };
   },
 };

@@ -1,115 +1,129 @@
 <template>
-  <div>
-    <v-container v-if="!loading">
-      <h1 class="display-1">Charecters:</h1>
-      <CustomEditableTable
-        v-if="headers"
-        :headers="headers"
-        :items="people"
-        @deleteItem="deleteItem"
-        @editItem="editItemDialog"
-      />
-      <CustomAddDialog
-        :isDialogOpen="isAddDialog"
-        @openDialog="openAddDialog"
-        @closeDialog="closeAddDialog"
-        @confirm="addNewUser"
-      />
-      <CustomEditDialog
-        :isDialogOpen="isEditDialog"
-        @closeDialog="closeEditDialog"
-        @confirm="addNewUser"
-      />
-    </v-container>
-    <v-container class="loader" v-else>
-      <v-progress-circular color="primary" indeterminate></v-progress-circular>
-    </v-container>
-  </div>
+  <EditableServerTable></EditableServerTable>
 </template>
 
 <script>
-import { ref, computed, onMounted } from "vue";
+import { ref, reactive } from "vue";
 import { useStore } from "vuex";
-import CustomEditableTable from "../components/CustomEditableTable.vue";
-import CustomAddDialog from "../components/CustomAddDialog.vue";
-import CustomEditDialog from "../components/CustomEditDialog.vue";
+import PersonAddDialog from "../components/PersonAddDialog.vue";
+import PersonEditDialog from "../components/PersonEditDialog.vue";
+import EditableServerTable from "../components/EditableServerTable.vue";
 
 export default {
-  name: "PeoplePage",
+  name: "PeoplePage2",
   components: {
-    CustomEditableTable,
-    CustomAddDialog,
-    CustomEditDialog,
+    PersonAddDialog,
+    PersonEditDialog,
+    EditableServerTable,
   },
-  setup(props) {
-    const headers = ref([
-      { key: "name", align: "start", title: "Name", value: "name" },
-      { key: "gender", title: "Gender", value: "gender" },
-      { key: "birth_year", title: "Birth Year", value: "birth_year" },
-      { key: "height", title: "Height", value: "height" },
-      { key: "mass", title: "Mass", value: "mass" },
-    ]);
-    const loading = ref(true);
-    const store = useStore();
-    const people = computed(() => store.getters.getPeople.results ?? []);
-    const isAddDialog = ref(false);
-    const isEditDialog = ref(false);
+  // setup() {
+  //   const itemsPerPage = ref(10);
+  //   const headers = reactive([
+  //     { key: "name", align: "start", title: "Name", value: "name" },
+  //     { key: "gender", title: "Gender", value: "gender" },
+  //     { key: "birth_year", title: "Birth Year", value: "birth_year" },
+  //     { key: "height", title: "Height", value: "height" },
+  //     { key: "mass", title: "Mass", value: "mass" },
+  //   ]);
+  //   const serverItems = ref([]);
+  //   const loading = ref(true);
+  //   const totalItems = ref(0);
 
-    onMounted(async () => {
-      try {
-        loading.value = true;
-        await store.dispatch("fetchPeople");
-        loading.value = false;
-      } catch (error) {
-        console.error("Error fetching people:", error);
-      }
-    });
+  //   const editableCharacter = ref({});
+  //   const isAddDialog = ref(false);
+  //   const isEditDialog = ref(false);
+  //   const editableCharacterIndex = ref(0);
 
-    const editItemDialog = (item) => {
-      isEditDialog.value = true;
-      store.dispatch("editPerson", item);
-    };
+  //   const store = useStore();
 
-    const closeAddDialog = () => {
-      isAddDialog.value = false;
-    };
+  //   const loadItems = async ({ page, itemsPerPage }) => {
+  //     try {
+  //       loading.value = true;
+  //       const response = await store.dispatch("fetchPeopleByPage", page);
+  //       serverItems.value = response.results;
+  //       totalItems.value = response.count;
+  //       loading.value = false;
+  //     } catch (error) {
+  //       console.error("Error fetching people:", error);
+  //     }
+  //   };
 
-    const closeEditDialog = () => {
-      isEditDialog.value = false;
-    };
+  //   // ADD CHARACTER
+  //   const closeAddDialog = () => {
+  //     isAddDialog.value = false;
+  //   };
 
-    const openAddDialog = () => {
-      isAddDialog.value = true;
-    };
+  //   const openAddDialog = () => {
+  //     isAddDialog.value = true;
+  //   };
 
-    const addNewUser = (newUser) => {
-      store.dispatch("addPerson", newUser);
-    };
+  //   const addNewCharacter = (newCharacter) => {
+  //     store.dispatch("addCharacter", newCharacter);
+  //   };
 
-    const deleteItem = (item) => {
-      console.log("delete" + item.name);
-      store.dispatch("deletePerson", item);
-    };
+  //   //DELETE CHARACTER
+  //   const deleteCharacter = (character) => {
+  //     console.log("delete" + character.name);
+  //     store.dispatch("deleteCharacter", character);
+  //   };
 
-    return {
-      headers,
-      loading,
-      people,
-      editItemDialog,
-      deleteItem,
-      isAddDialog,
-      closeAddDialog,
-      openAddDialog,
-      addNewUser,
-      isEditDialog,
-      closeEditDialog,
-    };
-  },
+  //   //EDIT CHARACTER
+  //   const closeEditDialog = () => {
+  //     isEditDialog.value = false;
+  //   };
+
+  //   const openEditDialog = (charecter, index) => {
+  //     editableCharacter.value = charecter;
+  //     editableCharacterIndex.value = index;
+  //     isEditDialog.value = true;
+  //   };
+
+  //   const editCharacter = (editedCharacter) => {
+  //     store.dispatch("editCharacter", {
+  //       value: editedCharacter,
+  //       index: editableCharacterIndex.value,
+  //     });
+  //   };
+
+  //   return {
+  //     itemsPerPage,
+  //     headers,
+  //     serverItems,
+  //     loading,
+  //     totalItems,
+  //     loadItems,
+  //     closeAddDialog,
+  //     openAddDialog,
+  //     addNewCharacter,
+  //     isAddDialog,
+  //     deleteCharacter,
+  //     closeEditDialog,
+  //     openEditDialog,
+  //     editCharacter,
+  //     isEditDialog,
+  //     editableCharacter,
+  //     editableCharacterIndex,
+  //   };
+  // },
 };
 </script>
 
-<style>
-.loader {
-  text-align: center;
+<!-- <style>
+.table-container {
+  position: relative;
 }
-</style>
+
+.buttons-column {
+  position: absolute;
+  right: 0;
+  opacity: 0;
+}
+
+.table-data-row:hover .buttons-column {
+  opacity: 1;
+}
+
+.v-data-table__wrapper {
+  position: relative;
+}
+</style> -->
