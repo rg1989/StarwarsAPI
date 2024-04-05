@@ -19,7 +19,7 @@
             :key="item"
             @click="itemSelect(item)"
           >
-            {{ item.name }}
+            <span v-html="highlightedName(item.name)"></span>
           </li>
           <li
             class="result_item show_more_item pointer"
@@ -66,12 +66,26 @@ export default {
     const categorySelect = (category) => {
       emit("categorySelect", category);
     };
+    const highlightedName = (name) => {
+      if (!name) return name;
+      const searchTerm = searchInput.value.toLowerCase();
+      const index = name.toLowerCase().indexOf(searchTerm);
+      if (index === -1) return name;
+      const highlighted =
+        name.slice(0, index) +
+        "<mark>" +
+        name.slice(index, index + searchTerm.length) +
+        "</mark>" +
+        name.slice(index + searchTerm.length);
+      return highlighted;
+    };
     return {
       searchInput,
       handleChange,
       itemSelect,
       categorySelect,
       isDropdownEmpty,
+      highlightedName,
     };
   },
 };
@@ -117,5 +131,8 @@ ul {
 }
 .loader {
   text-align: center;
+}
+mark {
+  background-color: yellow;
 }
 </style>
