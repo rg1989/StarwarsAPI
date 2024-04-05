@@ -8,8 +8,9 @@
       single-line
       placeholder="Search the stars"
       @input="handleChange"
+      hide-details
     />
-    <ul v-if="!isLoading" :class="{ dropdown: isDropdownEmpty }">
+    <ul v-if="!isLoading" class="dropdown" :class="{ dropdownHidden: isDropdownEmpty }">
       <li v-for="(items, category) in filteredData" :key="category">
         <span class="category">{{ category }}</span>
         <ul>
@@ -50,10 +51,17 @@ export default {
       type: Boolean,
       required: true,
     },
+    isFocused: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
   },
   setup(props, { emit }) {
     const searchInput = ref("");
-    const isDropdownEmpty = computed(() => Object.keys(props.filteredData).length > 0);
+    const isDropdownEmpty = computed(
+      () => Object.keys(props.filteredData).length == 0 || !props.isFocused
+    );
 
     const handleChange = () => {
       emit("inputChange", searchInput.value);
@@ -79,6 +87,7 @@ export default {
         name.slice(index + searchTerm.length);
       return highlighted;
     };
+
     return {
       searchInput,
       handleChange,
@@ -104,6 +113,9 @@ export default {
   background-color: #e4f5fc;
   border: 1px solid #ccc;
   padding: 0.5rem;
+}
+.dropdownHidden {
+  display: none;
 }
 
 .category {

@@ -2,6 +2,8 @@
   <div>
     <h1 class="display-1">HomePage:</h1>
     <Autocomplete
+      ref="autocompleteRef"
+      :isFocused="isAutocompleteFocused"
       :filteredData="searchResults"
       :isLoading="isLoading"
       @inputChange="inputChange"
@@ -12,7 +14,7 @@
 </template>
 
 <script>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, onUnmounted } from "vue";
 import Autocomplete from "../components/CustomAutocomplete.vue";
 import { debounce } from "lodash";
 import { useStore } from "vuex";
@@ -27,6 +29,8 @@ export default {
   setup() {
     const isLoading = ref(false);
     const searchResults = reactive({});
+    const autocompleteRef = ref(null);
+    const isAutocompleteFocused = ref(false);
 
     const store = useStore();
 
@@ -35,6 +39,13 @@ export default {
     });
 
     const inputChange = async (inputValue) => {
+      if (inputValue == "") {
+        for (const key in searchResults) {
+          delete searchResults[key];
+        }
+        isLoading.value = false;
+        return;
+      }
       isLoading.value = true;
       const newResults = await store.dispatch("fetchDataByString", inputValue);
       newResults.forEach(({ category, data }) => {
@@ -57,12 +68,30 @@ export default {
       router.push({ name: category });
     };
 
+    const handleClickOutside = (event) => {
+      if (autocompleteRef.value && !autocompleteRef.value.$el.contains(event.target)) {
+        isAutocompleteFocused.value = false;
+      } else {
+        isAutocompleteFocused.value = true;
+      }
+    };
+
+    onMounted(() => {
+      document.addEventListener("click", handleClickOutside);
+    });
+
+    onUnmounted(() => {
+      document.removeEventListener("click", handleClickOutside);
+    });
+
     return {
       isLoading,
       searchResults,
       inputChange: debouncedInputChange,
       itemSelect,
       categorySelect,
+      autocompleteRef,
+      isAutocompleteFocused,
     };
   },
 };
