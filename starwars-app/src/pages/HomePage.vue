@@ -61,7 +61,11 @@ export default {
     const debouncedInputChange = debounce(inputChange, 200);
 
     const itemSelect = (item) => {
-      router.push({ name: routeNames.ENTITY, params: { name: item.name } });
+      store.dispatch("selectEntity", item);
+      router.push({
+        name: routeNames.ENTITY,
+        params: { entity: JSON.stringify({ ...item }) },
+      });
     };
 
     const categorySelect = (category) => {

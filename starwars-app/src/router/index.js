@@ -53,8 +53,13 @@ const routes = [
     },
     {
         name: routeNames.ENTITY,
-        path: "/entity/:name",
-        component: EntityPage
+        path: "/entity/:entity",
+        component: EntityPage,
+        props: (route) => {
+            return {
+                entity: JSON.parse(route.params.entity)
+            }
+        }
     },
 ];
 const router = createRouter({
