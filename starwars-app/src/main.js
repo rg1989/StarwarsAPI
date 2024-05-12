@@ -17,6 +17,9 @@ import router from './router'
 const vuetify = createVuetify({
   components,
   directives,
+  theme: {
+    defaultTheme: 'light'
+  }
 })
 
 createApp(App).use(store)
